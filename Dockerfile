@@ -6,19 +6,15 @@ WORKDIR /app
 
 # Copiar solo pom.xml para cachear dependencias
 COPY pom.xml .
-COPY mvnw .
-COPY mvnw.cmd .
-COPY .mvn .mvn
 
 # Descargar dependencias (ejecutar primero para cachear)
-RUN mvn dependency:go-offline -q 2>/dev/null || true
+RUN mvn dependency:go-offline -q
 
 # Copiar código fuente
 COPY src src
 
-# Empaquetar sin tests y sin debugger
-RUN mvn clean package -DskipTests -P prod -q && \
-    ls -la target/*.jar
+# Empaquetar sin tests y con perfil prod
+RUN mvn clean package -DskipTests -P prod -q
 
 # ============================================================================
 # Stage 2: Runtime - Imagen mínima para producción
