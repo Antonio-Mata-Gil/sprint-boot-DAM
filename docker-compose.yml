@@ -16,31 +16,19 @@ services:
     ports:
       - "8000:8080"  # Local:Container (8000 porque es el puerto en .env.local)
     environment:
-      # Perfil
-      SPRING_PROFILES_ACTIVE: dev
-      
-      # Servidor
-      SERVER_PORT: 8080
-      
-      # Base de datos LOCAL
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/bbdd_pdau?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: Antomola1@
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
-      
-      # JPA
-      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      # Lee todas las variables desde .env.local
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SERVER_PORT: ${SERVER_PORT}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
       SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
-      
-      # Logging
-      LOGGING_LEVEL_ROOT: INFO
-      LOGGING_LEVEL_EXAMEN_BACKEND_DEMO: DEBUG
-      LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG
-      
-      # Autenticación
-      APP_AUTH_PASSWORD: "1234"
-      
-      # JVM
+      LOGGING_LEVEL_ROOT: ${LOGGING_LEVEL_ROOT}
+      LOGGING_LEVEL_EXAMEN_BACKEND_DEMO: ${LOGGING_LEVEL_EXAMEN_BACKEND}
+      LOGGING_LEVEL_ORG_HIBERNATE_SQL: ${LOGGING_LEVEL_ORG_HIBERNATE_SQL}
+      APP_AUTH_PASSWORD: ${APP_AUTH_PASSWORD}
       JAVA_OPTS: "-Xmx512m -Xms256m"
     
     depends_on:
@@ -67,8 +55,8 @@ services:
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     
     environment:
-      MYSQL_ROOT_PASSWORD: Antomola1@
-      MYSQL_DATABASE: bbdd_pdau
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_ROOT_HOST: "%"
     
     ports:
@@ -84,7 +72,7 @@ services:
       - app-network
     
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pAntomola1@"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
