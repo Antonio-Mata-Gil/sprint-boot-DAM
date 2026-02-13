@@ -1,0 +1,119 @@
+# ============================================================================
+# koyeb.yml - Configuración para despliegue en Koyeb (PaaS gratuito)
+# ============================================================================
+# Documentación: https://docs.koyeb.com/
+# Este archivo describe cómo desplegar la app en Koyeb desde GitHub
+
+apiVersion: koyeb.sh/v1alpha1
+kind: KoyebApp
+metadata:
+  name: demo-backend
+  namespace: default
+
+spec:
+  # Dominio/URL de la aplicación
+  domains:
+    - name: demo-backend  # Tu URL será: https://demo-backend-XXXXX.koyeb.app
+
+  # Servicios a desplegar
+  services:
+    - name: api
+      # Configuración de Git y build
+      git:
+        github:
+          repository: TU_USUARIO/TU_REPO  # ← REEMPLAZAR CON TU REPO
+          branch: main
+          deploy_on_push: true
+        
+        # Cómo buildear la aplicación
+        buildCommand: mvn clean package -DskipTests -P prod -q
+        
+        # Cómo ejecutar la aplicación
+        runCommand: java -jar target/*.jar
+
+      # Puerto de la aplicación
+      ports:
+        - name: http
+          port: 8080
+          protocol: http
+
+      # Scaling (Koyeb cuotas gratuitas: 2 réplicas max)
+      scaling:
+        min_instances: 1
+        max_instances: 2
+
+      # Variables de entorno para PRODUCCIÓN (Clever Cloud)
+      env:
+        # Perfil
+        - name: SPRING_PROFILES_ACTIVE
+          value: prod
+        
+        # Servidor
+        - name: SERVER_PORT
+          value: "8080"
+
+        # Base de datos CLEVER CLOUD (producción)
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:mysql://b3kpj0azhmjzwfhgphrn-mysql.services.clever-cloud.com:3306/b3kpj0azhmjzwfhgphrn?serverTimezone=UTC&useSSL=true
+        
+        - name: SPRING_DATASOURCE_USERNAME
+          value: ur9ojuzggdbmcqgo
+        
+        # Password - USAR SECRETO en Koyeb (NO hardcodear aquí)
+        # En Koyeb Dashboard: Settings → Secrets
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-password
+              key: password
+        
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: com.mysql.cj.jdbc.Driver
+
+        # JPA
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: validate
+        
+        # Logging (producción: solo lo importante)
+        - name: LOGGING_LEVEL_ROOT
+          value: WARN
+        
+        - name: LOGGING_LEVEL_EXAMEN_BACKEND_DEMO
+          value: INFO
+
+        # JVM (ajustar según plan de Koyeb)
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m -XX:+UseG1GC"
+
+      # Health check (Koyeb verifica que la app esté healthy)
+      healthcheck:
+        enabled: true
+        port: 8080
+        path: /api/actuator/health
+        initial_delay: 40
+        period: 30
+        timeout: 10
+        success_threshold: 1
+        failure_threshold: 3
+
+# ============================================================================
+# INSTRUCCIONES DE DESPLIEGUE EN KOYEB
+# ============================================================================
+# 
+# 1. Crear cuenta en Koyeb (sin tarjeta):
+#    https://www.koyeb.com
+#
+# 2. Crear secreto para BD:
+#    - Dashboard → Settings → Secrets
+#    - Name: db-password
+#    - Value: ReHxYooYj57iilGPTUvC (tu password Clever Cloud)
+#
+# 3. Desplegar:
+#    - Dashboard → New Service
+#    - Seleccionar GitHub Repo
+#    - Deploy from docker-compose.yml o koyeb.yml
+#
+# 4. La app estará disponible en:
+#    https://demo-backend-XXXXX.koyeb.app/api/actuator/health
+#
+# ============================================================================

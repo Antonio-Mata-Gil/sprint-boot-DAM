@@ -1,0 +1,54 @@
+# ============================================================================
+# .dockerignore-prod - Versión optimizada para producción (Koyeb)
+# Uso: docker build -f Dockerfile . --ignore=.dockerignore-prod
+# ============================================================================
+
+# Git
+.git
+.gitignore
+.gitattributes
+.github/
+
+# IDE
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+*.iml
+*.iws
+*.ipr
+
+# Build
+target/
+build/
+dist/
+.m2/
+
+# Testing (excluir tests en prod)
+src/test/
+**/*Test.java
+**/*Tests.java
+.coverage
+coverage/
+
+# Documentation
+README.md
+HELP.md
+*.md
+
+# Environment (nunca en prod)
+.env
+.env.local
+.env.production.local
+
+# Docker files
+docker-compose.yml
+docker-compose.*.yml
+
+# Misc
+*.log
+logs/
+.DS_Store
+Thumbs.db
+*.jar.original
