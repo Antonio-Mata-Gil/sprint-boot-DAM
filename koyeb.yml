@@ -21,7 +21,7 @@ spec:
       # Configuración de Git y build
       git:
         github:
-          repository: TU_USUARIO/TU_REPO  # ← REEMPLAZAR CON TU REPO
+          repository: Antonio-Mata-Gil/sprint-boot-DAM  # ✅ Repositorio correcto
           branch: main
           deploy_on_push: true
         
