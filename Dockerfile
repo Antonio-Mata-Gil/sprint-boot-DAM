@@ -1,7 +1,3 @@
-# ============================================================================
-# DOCKERFILE - Despliegue de Spring Boot con Multi-stage Build
-# ============================================================================
-
 # Stage 1: Build - Compilar la aplicación con Maven
 # ============================================================================
 FROM maven:3.9-eclipse-temurin-17-alpine AS builder
