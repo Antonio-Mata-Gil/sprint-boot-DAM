@@ -10,11 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Deploy to Koyeb
-        uses: koyeb/action-git-deploy@v1
-        with:
-          api_token: ${{ secrets.KOYEB_API_TOKEN }}
-          service-name: sprint-boot-dam
+      - name: Trigger Koyeb Redeploy
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ secrets.KOYEB_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            "https://app.koyeb.com/v1/services/32897f07-9bde-442d-9580-82bf0da153b1/redeploy"
