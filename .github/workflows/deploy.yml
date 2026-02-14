@@ -17,5 +17,4 @@ jobs:
         uses: koyeb/action-git-deploy@v1
         with:
           api_token: ${{ secrets.KOYEB_API_TOKEN }}
-          app_name: sprint-boot-dam
-          service_name: sprint-boot-dam
+          service-name: sprint-boot-dam
