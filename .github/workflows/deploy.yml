@@ -1,0 +1,21 @@
+name: Deploy to Koyeb
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Koyeb
+        uses: koyeb/action-git-deploy@v1
+        with:
+          api_token: ${{ secrets.KOYEB_API_TOKEN }}
+          app_name: sprint-boot-dam
+          service_name: sprint-boot-dam
