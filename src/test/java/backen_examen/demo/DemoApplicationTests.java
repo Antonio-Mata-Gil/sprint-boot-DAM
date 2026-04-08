@@ -1,9 +1,10 @@
-package examen_backend.demo;
+package backen_examen.demo;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import examen_backend.demo.DemoApplication;
 
-@SpringBootTest
+@SpringBootTest(classes = DemoApplication.class)
 class DemoApplicationTests {
 
 	@Test
